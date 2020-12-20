@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 
 interface Country {
   name: string;
@@ -9,7 +9,7 @@ interface Country {
 
 const COUNTRIES: Country[] = [
   {
-    name: "Russia",
+    name: "محمدس عااا",
     flag: "f/f3/Flag_of_Russia.svg",
     area: 17075200,
     population: 146989754
@@ -39,11 +39,14 @@ const COUNTRIES: Country[] = [
   templateUrl: "./table-basic.html"
 })
 export class NgbdTableBasic {
+  @ViewChild('tableC') tableC: ElementRef<HTMLElement>;
   countries = COUNTRIES;
-
+  ngAfterViewInit() {
+    console.log(this.tableC.nativeElement.querySelectorAll("tr"));
+}
   exportToXML() {
     var xml = '<?xml version="1.0" encoding="UTF-8"?><Root><Classes>';
-    var tritem = document.getElementById("tableC").getElementsByTagName("tr");
+    var tritem = this.tableC.nativeElement.querySelectorAll("tr");
     for (let i = 0; i < tritem.length; i++) {
       var celldata = tritem[i];
       if (celldata.cells.length > 0) {
@@ -55,31 +58,15 @@ export class NgbdTableBasic {
       }
     }
     xml += "</Classes></Root>";
-    //window.alert(xml);
     this.download("test.xml", xml);
-    //window.open("data:text/xml," + xml);
-    //here you can rewrite the xmlstring to a new document
-    //or use the hide control to store the xml text, call the text in code behind.
-    //also, you can call ajax to excuet codebehind and sava the xml file
-    // window.open('data:text/xml,' + xml);
   }
-  download(filename, text) {
-    // let elem = document.createElement("a");
-    // elem.setAttribute(
-    //   "href",
-    //   "data:text/plain;charset=utf-8," + encodeURIComponent(text)
-    // );
-    // elem.setAttribute("download", filename);
-    // elem.click();
-
-    let mywin = window.open(
-      "text/xml",
-      "",
-      "menubar=1,scrollbars=2,resizeable=1"
+  download(filename: string, text: string) {
+    let elem = document.createElement("a");
+    elem.setAttribute(
+      "href",
+      "data:text/xml;charset=utf-8," + encodeURIComponent(text)
     );
-    mywin.document.open;
-    mywin.opener = self;
-    //let XML_txt = '<tool attrib="now">text inside XML "tool" tag</tool>';
-    mywin.document.write(text);
+    elem.setAttribute("download", filename);
+    elem.click();
   }
 }
